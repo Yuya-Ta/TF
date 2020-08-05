@@ -1,0 +1,956 @@
+<div class="container">
+  <h2>【レビュー・口コミ】<%= @workbook.product %></h2>
+  <div class="row">
+    <div class="col-md-4 col-sm-12  mt-1 ">
+      <div class="card">
+        <div class="card-header text-canter">教材情報</div>
+      <img class="img-thumbnail rounded img-responsive d-block mx-auto mt-2" src="<%= @workbook.image %>">
+      <table class="table table-sm">
+        <tr><td>著者</td><td><%= @workbook.author %></td></tr>
+        <tr><td>タグ</td><td>
+          <% if @workbook.all==1 %>
+          <%= "全パート対応型" %>
+          <% end %>
+          <% if @workbook.listening==1 %>
+          <%= "リスニング型" %>
+          <% end %>
+          <% if @workbook.reading==1 %>
+          <%= "リーディング型" %>
+          <% end %>
+          <% if @workbook.word==1 %>
+          <%= "単語帳" %>
+          <% end %>
+          <% if @workbook.grammer==1 %>
+          <%= "文法型" %>
+          <% end %>
+        </td></tr>
+        <tr><td>総合満足度</td><td><span class="star5_rating" data-rate="<%=@satisfaction_rate%>"></span></td></tr>
+    　</table>
+    </div>
+  </div>
+    <div class="col-md-8 col-sm-12 mt-1 ">
+      <div class="card mb-4">
+      <ul class="nav nav-tabs nav-justified dropdown card-header" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link active" id="item1-tab" data-toggle="tab" href="#item1" role="tab" aria-controls="item1" aria-selected="true">口コミ・レビュー</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="item2-tab" data-toggle="tab" href="#item2" role="tab" aria-controls="item2" aria-selected="false">回答データ</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="item3-tab" data-toggle="tab" href="#item3" role="tab" aria-controls="item3" aria-selected="false">点数別データ</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane fade show active" id="item1" role="tabpanel" aria-labelledby="item1-tab">
+              <div class="row">
+            <% @post.each do |post| %>
+                <div class="col-4">
+                <img src="<%= "/user_images/#{post.user.image_name}" %>"class="  mx-auto d-block user-img">
+                <% if @current_user  && Like.find_by(user_id: @current_user.id, post_id: post.id)  %>
+                <button type="button" class="btn btn-block btn-info">役に立った済み</button>
+                <% elsif @current_user  %>
+                <%= link_to("/likes/#{post.id}/create", {method: "post",role: "button",class: "btn btn-block btn-outline-info"}) do %>
+                役に立った
+                <% end %>
+                <% else %>
+                <% end %>
+                </div>
+                <div class="col-8">
+                  <table class="table table-sm">
+                    <tr><td>ニックネーム</td><td>
+                      <%if post.user.name %>
+                      <p class="font-weight-bold text-dark"><%=  post.user.name %></p>
+                      <% else %>
+                      <%="非公開"%>
+                      <% end %>
+                    </td></tr>
+                    <tr><td>総合満足度</td><td><span class="star5_rating" data-rate="<%= post.satisfaction %>"></span></td></tr>
+                    <tr><td>教材利用開始時の点数</td><td><%= post.points %>点</td></tr>
+                    <tr><td>教材の難易度</td><td>
+                      <% if post.difficulty==1 %>
+                        非常に難しいor簡単
+                      <% elsif post.difficulty==2 %>
+                        難しいor簡単
+                      <% elsif post.difficulty==3 %>
+                        普通
+                      <% elsif post.difficulty==4 %>
+                      　ちょうどいい
+                      <% else %>
+                      　非常にちょうどいい
+                      <% end %>
+                    </td></tr>
+                　</table>
+                </div>
+                  <% if post.good_content && post.bad_content %>
+                  <div class="col-12">
+                  【いい評価】
+                        <%= post.good_content%>
+                      </div>
+                      <div class="col-12">
+                        【悪い評価】
+                        <%= post.bad_content %>
+                      </div>
+
+
+                    <% elsif post.good_content %>
+                    <div class="col-12">
+                    【いい評価】
+                          <%= post.good_content%>
+                        </div>
+                    <% elsif  post.bad_content %>
+                    <div class="col-12">
+                    【悪い評価】
+                          <%= post.bad_content %>
+                        </div>
+
+                    <% else %>
+                    <% end  %>
+                <hr>
+            <% end %>
+          </div>
+
+
+
+
+
+
+
+
+
+
+
+
+          </div>
+          <div class="tab-pane fade" id="item2" role="tabpanel" aria-labelledby="item2-tab">
+            <!--総合評価コンテンツ-->
+            <div class="chart-container" style="position: relative; width:100%; height:70vh">
+            <canvas  class="mt-4" width="800" height="450px" id="myChart"></canvas>
+            </div>
+            <script>
+            var ctx = document.getElementById("myChart");
+            var myChart = new Chart(ctx, {
+              type: 'radar',
+              data: {labels: ["総合満足度", "解説の詳しさ", "難易度適正", "使いやすさ","分量の適正"],
+                    datasets: [
+                <% if @satisfaction195 %>
+                  {
+                    label: '~195点の利用者の評価',
+                    data: [<%= @satisfaction195 %>,<%= @detail195 %>,<%= @difficulty195 %>, <%= @ease195 %>,<%=@volume195 %>],
+                    borderColor: "rgba(179,226,205,1)",
+                    backgroundColor: "rgba(179,226,205,0.4)",
+                    hidden: true
+                  },
+                <% end %>
+                <% if @satisfaction200295 %>
+                  {
+                    label: '200点~295点の利用者の評価',
+                    data: [<%= @satisfaction200295 %>,<%= @detail200295 %>,<%= @difficulty200295 %>, <%= @ease200295 %>,<%=@volume200295 %>],
+                    borderColor: "rgba(253,205,172,1)",
+                    backgroundColor: "rgba(253,205,172,0.4)",
+                    hidden: true
+                  },
+                  <% end %>
+                  <% if @satisfaction300395 %>
+                  {
+                    label: '300点~395点の利用者の評価',
+                    data: [<%= @satisfaction300395 %>,<%= @detail300395 %>,<%= @difficulty300395 %>, <%= @ease300395 %>,<%=@volume300395 %>],
+                    borderColor: "rgba(203,213,232,1)",
+                    backgroundColor: "rgba(203,213,232,0.4)",
+                    hidden: true
+                  },
+                  <% end %>
+                  <% if @satisfaction400495 %>
+                  {
+                    label: '400点~495点の利用者の評価',
+                    data: [<%= @satisfaction400495 %>,<%= @detail400495 %>,<%= @difficulty400495 %>, <%= @ease400495 %>,<%=@volume400495 %>],
+                    borderColor: "rgba(244,202,228,1)",
+                    backgroundColor: "rgba(244,202,228,0.4)",
+                    hidden: true
+                  },
+                  <% end %>
+                  <% if @satisfaction500595 %>
+                  {
+                    label: '500点~595点の利用者の評価',
+                    data: [<%= @satisfaction500595 %>,<%= @detail500595 %>,<%= @difficulty500595 %>, <%= @ease500595 %>,<%=@volume500595 %>],
+                    borderColor: "rgba(230,245,201,1)",
+                    backgroundColor: "rgba(230,245,201,0.4)",
+                    hidden: true
+                  },
+                  <% end %>
+                  <% if @satisfaction600695 %>
+                  {
+                    label: '600点~695点の利用者の評価',
+                    data: [<%= @satisfaction600695 %>,<%= @detail600695 %>,<%= @difficulty600695 %>, <%= @ease600695 %>,<%=@volume600695 %>],
+                    borderColor: "rgba(255,242,174,1)",
+                    backgroundColor: "rgba(255,242,174,0.4)",
+                    hidden: true
+                  },
+                  <% end %>
+                  <% if @satisfaction700795 %>
+                  {
+                    label: '700点~795点の利用者の評価',
+                    data: [<%= @satisfaction700795 %>,<%= @detail700795 %>,<%= @difficulty700795 %>, <%= @ease700795 %>,<%=@volume700795 %>],
+                    borderColor: "rgba(241,226,204,1)",
+                    backgroundColor: "rgba(241,226,204,0.4)",
+                    hidden: true
+                  },
+                  <% end %>
+                  <% if @satisfaction800895 %>
+                  {
+                    label: '800点~895点の利用者の評価',
+                    data: [<%= @satisfaction800895 %>,<%= @detail800895 %>,<%= @difficulty800895 %>, <%= @ease800895 %>,<%=@volume800895 %>],
+                    borderColor: "rgba(204,204,204,1)",
+                    backgroundColor: "rgba(204,204,204,0.4)",
+                    hidden: true
+                  },
+                  <% end %>
+                  <% if @satisfaction900990 %>
+                  {
+                    label: '900点~990点の利用者の評価',
+                    data: [<%= @satisfaction900990 %>,<%= @detail900990 %>,<%= @difficulty900990 %>, <%= @ease900990 %>,<%=@volume900990 %>],
+                    borderColor: "rgba(0,0,255,1)",
+                    backgroundColor: "rgba(0,0,0,0)",
+                    hidden: true
+                  },
+                  <% end %>
+                  {
+                    label: '全利用者の評価',
+                    backgroundColor: "rgba(0,0,80,0.4)",
+                    borderColor: "rgba(0,0,80,1)",
+                    data: [<%= @satisfaction %>,<%= @detail %>,<%= @difficulty %>,<%= @ease %>, <%=@volume %>]
+                  }
+                ]
+                },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scale: {
+                          ticks: {
+                            min: 0,
+                            max: 5,
+                            stepSize: 1.0
+                          },
+                          pointLabels:{
+                            fontSize:14
+                          }
+                        },
+                        legend: {
+                          position:'bottom',
+                        }
+                        }
+
+
+            });
+          </script>
+          <% if  @satisfaction900990 or @satisfaction800895 or @satisfaction700795 or @satisfaction600695 or @satisfaction500595 or @satisfaction400495 or @satisfaction300395 or @satisfaction200295 or @satisfaction195%>
+          <p class="text-center">点数タップで、回答者の点数ごとの集計結果をグラフに表示することが出来ます。</p>
+          <% end %>
+          <h2>教材の利用者</h2>
+            <%= bar_chart  [
+              ["900~",@post900990.count],
+              ["800~895",@post800895.count],
+              ["700~795",@post700795.count],
+              ["600~695",@post600695.count],
+              ["500~595",@post500595.count],
+              ["400~495",@post400495.count],
+              ["300~395",@post300395.count],
+              ["200~295",@post200295.count],
+              ["~195" ,@post195.count]
+            ] %>
+            <h2>利用した期間</h2>
+            <%= bar_chart  [
+              ["３か月～",@post.where(period:5).count],
+              ["２か月～３か月",@post.where(period:4).count],
+              ["１ヵ月～２か月",@post.where(period:3).count],
+              ["２週間～１ヵ月",@post.where(period:2).count],
+              ["～２週間" ,@post.where(period:1).count]
+            ] %>
+            <h2>利用した回数(何周したか)</h2>
+            <%= bar_chart  [
+              ["５周以上",@post.where(counts:5).count],
+              ["４周",@post.where(counts:4).count],
+              ["３周",@post.where(counts:3).count],
+              ["２周",@post.where(counts:2).count],
+              ["１周" ,@post.where(counts:1).count]
+            ] %>
+
+
+
+          </div>
+          <div class="tab-pane fade" id="item3" role="tabpanel" aria-labelledby="item3-tab">
+            <!--点数別の表示-->
+            <div class="accordion" id="accordionExample">
+              <!--900点台-->
+              <% if @satisfaction900990 %>
+              <div class="card">
+                <div class="card-header" id="headingOne">
+                  <h5 class="mb-0">
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                      900点~990点の利用者の回答データ
+                    </button>
+                  </h5>
+                </div>
+
+                <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+                  <div class="card-body">
+                    <h2>総合満足度</h2>
+                    <%= bar_chart  [
+                      ["非常に満足",@post900990.where(satisfaction:5).count],
+                      ["満足",@post900990.where(satisfaction:4).count],
+                      ["普通",@post900990.where(satisfaction:3).count],
+                      ["不満",@post900990.where(satisfaction:2).count],
+                      ["非常に不満" ,@post900990.where(satisfaction:1).count]
+                    ] %>
+                    <h2>教材難易度</h2>
+                    <%= bar_chart  [
+                      ["非常にちょうどいい",@post900990.where(difficulty:5).count],
+                      ["ちょうどいい",@post900990.where(difficulty:4).count],
+                      ["普通",@post900990.where(difficulty:3).count],
+                      ["簡単or難しい",@post900990.where(difficulty:2).count],
+                      ["非常に簡単or難しい" ,@post900990.where(difficulty:1).count]
+                    ] %>
+                    <h2>解説の詳しさ</h2>
+                    <%= bar_chart  [
+                      ["非常に詳しい",@post900990.where(detail:5).count],
+                      ["詳しい",@post900990.where(detail:4).count],
+                      ["普通",@post900990.where(detail:3).count],
+                      ["足りない",@post900990.where(detail:2).count],
+                      ["非常に足りない" ,@post900990.where(detail:1).count]
+                    ] %>
+                    <h2>教材のボリューム</h2>
+                    <%= bar_chart  [
+                      ["非常にちょうどいい",@post900990.where(volume:5).count],
+                      ["ちょうどいい",@post900990.where(volume:4).count],
+                      ["普通",@post900990.where(volume:3).count],
+                      ["簡単or難しい",@post900990.where(volume:2).count],
+                      ["非常に簡単or難しい" ,@post900990.where(volume:1).count]
+                    ] %>
+                    <h2>教材の使いやすさ</h2>
+                    <%= bar_chart  [
+                      ["非常に使いやすい",@post900990.where(ease:5).count],
+                      ["使いやすい",@post900990.where(ease:4).count],
+                      ["普通",@post900990.where(ease:3).count],
+                      ["使いにくい",@post900990.where(ease:2).count],
+                      ["非常に使いにくい" ,@post900990.where(ease:1).count]
+                    ] %>
+                    <h2>利用した期間</h2>
+                    <%= bar_chart  [
+                      ["３か月～",@post900990.where(period:5).count],
+                      ["２か月～３か月",@post900990.where(period:4).count],
+                      ["１ヵ月～２か月",@post900990.where(period:3).count],
+                      ["２週間～１ヵ月",@post900990.where(period:2).count],
+                      ["～２週間" ,@post900990.where(period:1).count]
+                    ] %>
+                    <h2>利用した回数(何周したか)</h2>
+                    <%= bar_chart  [
+                      ["５周以上",@post900990.where(counts:5).count],
+                      ["４周",@post900990.where(counts:4).count],
+                      ["３周",@post900990.where(counts:3).count],
+                      ["２周",@post900990.where(counts:2).count],
+                      ["１周" ,@post900990.where(counts:1).count]
+                    ] %>
+                  </div>
+                </div>
+              </div>
+              <% end %>
+              <% if @satisfaction800895 %>
+              <!--800点台-->
+              <div class="card">
+                <div class="card-header" id="headingTwo">
+                  <h5 class="mb-0">
+                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                      800点~895点の利用者の回答データ
+                    </button>
+                  </h5>
+                </div>
+                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+                  <div class="card-body">
+                    <h2>総合満足度</h2>
+                    <%= bar_chart  [
+                      ["非常に満足",@post800895.where(satisfaction:5).count],
+                      ["満足",@post800895.where(satisfaction:4).count],
+                      ["普通",@post800895.where(satisfaction:3).count],
+                      ["不満",@post800895.where(satisfaction:2).count],
+                      ["非常に不満" ,@post800895.where(satisfaction:1).count]
+                    ] %>
+                    <h2>教材難易度</h2>
+                    <%= bar_chart  [
+                      ["非常にちょうどいい",@post800895.where(difficulty:5).count],
+                      ["ちょうどいい",@post800895.where(difficulty:4).count],
+                      ["普通",@post800895.where(difficulty:3).count],
+                      ["簡単or難しい",@post800895.where(difficulty:2).count],
+                      ["非常に簡単or難しい" ,@post800895.where(difficulty:1).count]
+                    ] %>
+                    <h2>解説の詳しさ</h2>
+                    <%= bar_chart  [
+                      ["非常に詳しい",@post800895.where(detail:5).count],
+                      ["詳しい",@post800895.where(detail:4).count],
+                      ["普通",@post800895.where(detail:3).count],
+                      ["足りない",@post800895.where(detail:2).count],
+                      ["非常に足りない" ,@post800895.where(detail:1).count]
+                    ] %>
+                    <h2>教材のボリューム</h2>
+                    <%= bar_chart  [
+                      ["非常にちょうどいい",@post800895.where(volume:5).count],
+                      ["ちょうどいい",@post800895.where(volume:4).count],
+                      ["普通",@post800895.where(volume:3).count],
+                      ["簡単or難しい",@post800895.where(volume:2).count],
+                      ["非常に簡単or難しい" ,@post800895.where(volume:1).count]
+                    ] %>
+                    <h2>教材の使いやすさ</h2>
+                    <%= bar_chart  [
+                      ["非常に使いやすい",@post800895.where(ease:5).count],
+                      ["使いやすい",@post800895.where(ease:4).count],
+                      ["普通",@post800895.where(ease:3).count],
+                      ["使いにくい",@post800895.where(ease:2).count],
+                      ["非常に使いにくい" ,@post800895.where(ease:1).count]
+                    ] %>
+                    <h2>利用した期間</h2>
+                    <%= bar_chart  [
+                      ["３か月～",@post800895.where(period:5).count],
+                      ["２か月～３か月",@post800895.where(period:4).count],
+                      ["１ヵ月～２か月",@post800895.where(period:3).count],
+                      ["２週間～１ヵ月",@post800895.where(period:2).count],
+                      ["～２週間" ,@post800895.where(period:1).count]
+                    ] %>
+                    <h2>利用した回数(何周したか)</h2>
+                    <%= bar_chart  [
+                      ["５周以上",@post800895.where(counts:5).count],
+                      ["４周",@post800895.where(counts:4).count],
+                      ["３周",@post800895.where(counts:3).count],
+                      ["２周",@post800895.where(counts:2).count],
+                      ["１周" ,@post800895.where(counts:1).count]
+                    ] %>
+                  </div>
+                </div>
+              </div>
+              <% end %>
+              <% if @satisfaction700795 %>
+              <!--700点台-->
+              <div class="card">
+                <div class="card-header" id="headingThree">
+                  <h5 class="mb-0">
+                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                      700点~795点の利用者の回答データ
+                    </button>
+                  </h5>
+                </div>
+                <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
+                  <div class="card-body">
+                    <h2>総合満足度</h2>
+                    <%= bar_chart  [
+                      ["非常に満足",@post700795.where(satisfaction:5).count],
+                      ["満足",@post700795.where(satisfaction:4).count],
+                      ["普通",@post700795.where(satisfaction:3).count],
+                      ["不満",@post700795.where(satisfaction:2).count],
+                      ["非常に不満" ,@post700795.where(satisfaction:1).count]
+                    ] %>
+                    <h2>教材難易度</h2>
+                    <%= bar_chart  [
+                      ["非常にちょうどいい",@post700795.where(difficulty:5).count],
+                      ["ちょうどいい",@post700795.where(difficulty:4).count],
+                      ["普通",@post700795.where(difficulty:3).count],
+                      ["簡単or難しい",@post700795.where(difficulty:2).count],
+                      ["非常に簡単or難しい" ,@post700795.where(difficulty:1).count]
+                    ] %>
+                    <h2>解説の詳しさ</h2>
+                    <%= bar_chart  [
+                      ["非常に詳しい",@post700795.where(detail:5).count],
+                      ["詳しい",@post700795.where(detail:4).count],
+                      ["普通",@post700795.where(detail:3).count],
+                      ["足りない",@post700795.where(detail:2).count],
+                      ["非常に足りない" ,@post700795.where(detail:1).count]
+                    ] %>
+                    <h2>教材のボリューム</h2>
+                    <%= bar_chart  [
+                      ["非常にちょうどいい",@post700795.where(volume:5).count],
+                      ["ちょうどいい",@post700795.where(volume:4).count],
+                      ["普通",@post700795.where(volume:3).count],
+                      ["簡単or難しい",@post700795.where(volume:2).count],
+                      ["非常に簡単or難しい" ,@post700795.where(volume:1).count]
+                    ] %>
+                    <h2>教材の使いやすさ</h2>
+                    <%= bar_chart  [
+                      ["非常に使いやすい",@post700795.where(ease:5).count],
+                      ["使いやすい",@post700795.where(ease:4).count],
+                      ["普通",@post700795.where(ease:3).count],
+                      ["使いにくい",@post700795.where(ease:2).count],
+                      ["非常に使いにくい" ,@post700795.where(ease:1).count]
+                    ] %>
+                    <h2>利用した期間</h2>
+                    <%= bar_chart  [
+                      ["３か月～",@post700795.where(period:5).count],
+                      ["２か月～３か月",@post700795.where(period:4).count],
+                      ["１ヵ月～２か月",@post700795.where(period:3).count],
+                      ["２週間～１ヵ月",@post700795.where(period:2).count],
+                      ["～２週間" ,@post700795.where(period:1).count]
+                    ] %>
+                    <h2>利用した回数(何周したか)</h2>
+                    <%= bar_chart  [
+                      ["５周以上",@post700795.where(counts:5).count],
+                      ["４周",@post700795.where(counts:4).count],
+                      ["３周",@post700795.where(counts:3).count],
+                      ["２周",@post700795.where(counts:2).count],
+                      ["１周" ,@post700795.where(counts:1).count]
+                    ] %>
+
+                  </div>
+                </div>
+              </div>
+              <% end %>
+              <% if @satisfaction600695 %>
+              <!--600点台-->
+              <div class="card">
+                <div class="card-header" id="headingfour">
+                  <h5 class="mb-0">
+                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapsefour" aria-expanded="false" aria-controls="collapsefour">
+                      600点~695点の利用者の回答データ
+                    </button>
+                  </h5>
+                </div>
+                <div id="collapsefour" class="collapse" aria-labelledby="headingfour" data-parent="#accordionExample">
+                  <div class="card-body">
+                    <h2>総合満足度</h2>
+                    <%= bar_chart  [
+                      ["非常に満足",@post600695.where(satisfaction:5).count],
+                      ["満足",@post600695.where(satisfaction:4).count],
+                      ["普通",@post600695.where(satisfaction:3).count],
+                      ["不満",@post600695.where(satisfaction:2).count],
+                      ["非常に不満" ,@post600695.where(satisfaction:1).count]
+                    ] %>
+                    <h2>教材難易度</h2>
+                    <%= bar_chart  [
+                      ["非常にちょうどいい",@post600695.where(difficulty:5).count],
+                      ["ちょうどいい",@post600695.where(difficulty:4).count],
+                      ["普通",@post600695.where(difficulty:3).count],
+                      ["簡単or難しい",@post600695.where(difficulty:2).count],
+                      ["非常に簡単or難しい" ,@post600695.where(difficulty:1).count]
+                    ] %>
+                    <h2>解説の詳しさ</h2>
+                    <%= bar_chart  [
+                      ["非常に詳しい",@post600695.where(detail:5).count],
+                      ["詳しい",@post600695.where(detail:4).count],
+                      ["普通",@post600695.where(detail:3).count],
+                      ["足りない",@post600695.where(detail:2).count],
+                      ["非常に足りない" ,@post600695.where(detail:1).count]
+                    ] %>
+                    <h2>教材のボリューム</h2>
+                    <%= bar_chart  [
+                      ["非常にちょうどいい",@post600695.where(volume:5).count],
+                      ["ちょうどいい",@post600695.where(volume:4).count],
+                      ["普通",@post600695.where(volume:3).count],
+                      ["簡単or難しい",@post600695.where(volume:2).count],
+                      ["非常に簡単or難しい" ,@post600695.where(volume:1).count]
+                    ] %>
+                    <h2>教材の使いやすさ</h2>
+                    <%= bar_chart  [
+                      ["非常に使いやすい",@post600695.where(ease:5).count],
+                      ["使いやすい",@post600695.where(ease:4).count],
+                      ["普通",@post600695.where(ease:3).count],
+                      ["使いにくい",@post600695.where(ease:2).count],
+                      ["非常に使いにくい" ,@post600695.where(ease:1).count]
+                    ] %>
+                    <h2>利用した期間</h2>
+                    <%= bar_chart  [
+                      ["３か月～",@post600695.where(period:5).count],
+                      ["２か月～３か月",@post600695.where(period:4).count],
+                      ["１ヵ月～２か月",@post600695.where(period:3).count],
+                      ["２週間～１ヵ月",@post600695.where(period:2).count],
+                      ["～２週間" ,@post600695.where(period:1).count]
+                    ] %>
+                    <h2>利用した回数(何周したか)</h2>
+                    <%= bar_chart  [
+                      ["５周以上",@post600695.where(counts:5).count],
+                      ["４周",@post600695.where(counts:4).count],
+                      ["３周",@post600695.where(counts:3).count],
+                      ["２周",@post600695.where(counts:2).count],
+                      ["１周" ,@post600695.where(counts:1).count]
+                    ] %>
+
+                  </div>
+                </div>
+              </div>
+              <% end %>
+              <% if @satisfaction500595 %>
+              <!--500点台-->
+              <div class="card">
+                <div class="card-header" id="headingfive">
+                  <h5 class="mb-0">
+                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapsefive" aria-expanded="false" aria-controls="collapsefive">
+                      500点~595点の利用者の回答データ
+                    </button>
+                  </h5>
+                </div>
+                <div id="collapsefive" class="collapse" aria-labelledby="headingfive" data-parent="#accordionExample">
+                  <div class="card-body">
+                    <h2>総合満足度</h2>
+                    <%= bar_chart  [
+                      ["非常に満足",@post500595.where(satisfaction:5).count],
+                      ["満足",@post500595.where(satisfaction:4).count],
+                      ["普通",@post500595.where(satisfaction:3).count],
+                      ["不満",@post500595.where(satisfaction:2).count],
+                      ["非常に不満" ,@post500595.where(satisfaction:1).count]
+                    ] %>
+                    <h2>教材難易度</h2>
+                    <%= bar_chart  [
+                      ["非常にちょうどいい",@post500595.where(difficulty:5).count],
+                      ["ちょうどいい",@post500595.where(difficulty:4).count],
+                      ["普通",@post500595.where(difficulty:3).count],
+                      ["簡単or難しい",@post500595.where(difficulty:2).count],
+                      ["非常に簡単or難しい" ,@post500595.where(difficulty:1).count]
+                    ] %>
+                    <h2>解説の詳しさ</h2>
+                    <%= bar_chart  [
+                      ["非常に詳しい",@post500595.where(detail:5).count],
+                      ["詳しい",@post500595.where(detail:4).count],
+                      ["普通",@post500595.where(detail:3).count],
+                      ["足りない",@post500595.where(detail:2).count],
+                      ["非常に足りない" ,@post500595.where(detail:1).count]
+                    ] %>
+                    <h2>教材のボリューム</h2>
+                    <%= bar_chart  [
+                      ["非常にちょうどいい",@post500595.where(volume:5).count],
+                      ["ちょうどいい",@post500595.where(volume:4).count],
+                      ["普通",@post500595.where(volume:3).count],
+                      ["簡単or難しい",@post500595.where(volume:2).count],
+                      ["非常に簡単or難しい" ,@post500595.where(volume:1).count]
+                    ] %>
+                    <h2>教材の使いやすさ</h2>
+                    <%= bar_chart  [
+                      ["非常に使いやすい",@post500595.where(ease:5).count],
+                      ["使いやすい",@post500595.where(ease:4).count],
+                      ["普通",@post500595.where(ease:3).count],
+                      ["使いにくい",@post500595.where(ease:2).count],
+                      ["非常に使いにくい" ,@post500595.where(ease:1).count]
+                    ] %>
+                    <h2>利用した期間</h2>
+                    <%= bar_chart  [
+                      ["３か月～",@post500595.where(period:5).count],
+                      ["２か月～３か月",@post500595.where(period:4).count],
+                      ["１ヵ月～２か月",@post500595.where(period:3).count],
+                      ["２週間～１ヵ月",@post500595.where(period:2).count],
+                      ["～２週間" ,@post500595.where(period:1).count]
+                    ] %>
+                    <h2>利用した回数(何周したか)</h2>
+                    <%= bar_chart  [
+                      ["５周以上",@post500595.where(counts:5).count],
+                      ["４周",@post500595.where(counts:4).count],
+                      ["３周",@post500595.where(counts:3).count],
+                      ["２周",@post500595.where(counts:2).count],
+                      ["１周" ,@post500595.where(counts:1).count]
+                    ] %>
+
+                  </div>
+                </div>
+              </div>
+              <% end %>
+              <% if @satisfaction400495 %>
+              <!--400点台-->
+              <div class="card">
+                <div class="card-header" id="headingsix">
+                  <h5 class="mb-0">
+                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapsesix" aria-expanded="false" aria-controls="collapsesix">
+                      400点~495点の利用者の回答データ
+                    </button>
+                  </h5>
+                </div>
+                <div id="collapsesix" class="collapse" aria-labelledby="headingsix" data-parent="#accordionExample">
+                  <div class="card-body">
+                    <h2>総合満足度</h2>
+                    <%= bar_chart  [
+                      ["非常に満足",@post400495.where(satisfaction:5).count],
+                      ["満足",@post400495.where(satisfaction:4).count],
+                      ["普通",@post400495.where(satisfaction:3).count],
+                      ["不満",@post400495.where(satisfaction:2).count],
+                      ["非常に不満" ,@post400495.where(satisfaction:1).count]
+                    ] %>
+                    <h2>教材難易度</h2>
+                    <%= bar_chart  [
+                      ["非常にちょうどいい",@post400495.where(difficulty:5).count],
+                      ["ちょうどいい",@post400495.where(difficulty:4).count],
+                      ["普通",@post400495.where(difficulty:3).count],
+                      ["簡単or難しい",@post400495.where(difficulty:2).count],
+                      ["非常に簡単or難しい" ,@post400495.where(difficulty:1).count]
+                    ] %>
+                    <h2>解説の詳しさ</h2>
+                    <%= bar_chart  [
+                      ["非常に詳しい",@post400495.where(detail:5).count],
+                      ["詳しい",@post400495.where(detail:4).count],
+                      ["普通",@post400495.where(detail:3).count],
+                      ["足りない",@post400495.where(detail:2).count],
+                      ["非常に足りない" ,@post400495.where(detail:1).count]
+                    ] %>
+                    <h2>教材のボリューム</h2>
+                    <%= bar_chart  [
+                      ["非常にちょうどいい",@post400495.where(volume:5).count],
+                      ["ちょうどいい",@post400495.where(volume:4).count],
+                      ["普通",@post400495.where(volume:3).count],
+                      ["簡単or難しい",@post400495.where(volume:2).count],
+                      ["非常に簡単or難しい" ,@post400495.where(volume:1).count]
+                    ] %>
+                    <h2>教材の使いやすさ</h2>
+                    <%= bar_chart  [
+                      ["非常に使いやすい",@post400495.where(ease:5).count],
+                      ["使いやすい",@post400495.where(ease:4).count],
+                      ["普通",@post400495.where(ease:3).count],
+                      ["使いにくい",@post400495.where(ease:2).count],
+                      ["非常に使いにくい" ,@post400495.where(ease:1).count]
+                    ] %>
+                    <h2>利用した期間</h2>
+                    <%= bar_chart  [
+                      ["３か月～",@post400495.where(period:5).count],
+                      ["２か月～３か月",@post400495.where(period:4).count],
+                      ["１ヵ月～２か月",@post400495.where(period:3).count],
+                      ["２週間～１ヵ月",@post400495.where(period:2).count],
+                      ["～２週間" ,@post400495.where(period:1).count]
+                    ] %>
+                    <h2>利用した回数(何周したか)</h2>
+                    <%= bar_chart  [
+                      ["５周以上",@post400495.where(counts:5).count],
+                      ["４周",@post400495.where(counts:4).count],
+                      ["３周",@post400495.where(counts:3).count],
+                      ["２周",@post400495.where(counts:2).count],
+                      ["１周" ,@post400495.where(counts:1).count]
+                    ] %>
+
+                  </div>
+                </div>
+              </div>
+              <% end %>
+              <% if @satisfaction300395 %>
+              <!--300点台-->
+              <div class="card">
+                <div class="card-header" id="headingseven">
+                  <h5 class="mb-0">
+                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseseven" aria-expanded="false" aria-controls="collapseseven">
+                      300点~395点の利用者の回答データ
+                    </button>
+                  </h5>
+                </div>
+                <div id="collapseseven" class="collapse" aria-labelledby="headingseven" data-parent="#accordionExample">
+                  <div class="card-body">
+                    <h2>総合満足度</h2>
+                    <%= bar_chart  [
+                      ["非常に満足",@post300395.where(satisfaction:5).count],
+                      ["満足",@post300395.where(satisfaction:4).count],
+                      ["普通",@post300395.where(satisfaction:3).count],
+                      ["不満",@post300395.where(satisfaction:2).count],
+                      ["非常に不満" ,@post300395.where(satisfaction:1).count]
+                    ] %>
+                    <h2>教材難易度</h2>
+                    <%= bar_chart  [
+                      ["非常にちょうどいい",@post300395.where(difficulty:5).count],
+                      ["ちょうどいい",@post300395.where(difficulty:4).count],
+                      ["普通",@post300395.where(difficulty:3).count],
+                      ["簡単or難しい",@post300395.where(difficulty:2).count],
+                      ["非常に簡単or難しい" ,@post300395.where(difficulty:1).count]
+                    ] %>
+                    <h2>解説の詳しさ</h2>
+                    <%= bar_chart  [
+                      ["非常に詳しい",@post300395.where(detail:5).count],
+                      ["詳しい",@post300395.where(detail:4).count],
+                      ["普通",@post300395.where(detail:3).count],
+                      ["足りない",@post300395.where(detail:2).count],
+                      ["非常に足りない" ,@post300395.where(detail:1).count]
+                    ] %>
+                    <h2>教材のボリューム</h2>
+                    <%= bar_chart  [
+                      ["非常にちょうどいい",@post300395.where(volume:5).count],
+                      ["ちょうどいい",@post300395.where(volume:4).count],
+                      ["普通",@post300395.where(volume:3).count],
+                      ["簡単or難しい",@post300395.where(volume:2).count],
+                      ["非常に簡単or難しい" ,@post300395.where(volume:1).count]
+                    ] %>
+                    <h2>教材の使いやすさ</h2>
+                    <%= bar_chart  [
+                      ["非常に使いやすい",@post300395.where(ease:5).count],
+                      ["使いやすい",@post300395.where(ease:4).count],
+                      ["普通",@post300395.where(ease:3).count],
+                      ["使いにくい",@post300395.where(ease:2).count],
+                      ["非常に使いにくい" ,@post300395.where(ease:1).count]
+                    ] %>
+                    <h2>利用した期間</h2>
+                    <%= bar_chart  [
+                      ["３か月～",@post300395.where(period:5).count],
+                      ["２か月～３か月",@post300395.where(period:4).count],
+                      ["１ヵ月～２か月",@post300395.where(period:3).count],
+                      ["２週間～１ヵ月",@post300395.where(period:2).count],
+                      ["～２週間" ,@post300395.where(period:1).count]
+                    ] %>
+                    <h2>利用した回数(何周したか)</h2>
+                    <%= bar_chart  [
+                      ["５周以上",@post300395.where(counts:5).count],
+                      ["４周",@post300395.where(counts:4).count],
+                      ["３周",@post300395.where(counts:3).count],
+                      ["２周",@post300395.where(counts:2).count],
+                      ["１周" ,@post300395.where(counts:1).count]
+                    ] %>
+
+                  </div>
+                </div>
+              </div>
+              <% end %>
+              <% if @satisfaction200295 %>
+              <!--200点台-->
+              <div class="card">
+                <div class="card-header" id="headingeight">
+                  <h5 class="mb-0">
+                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseeight" aria-expanded="false" aria-controls="collapseeight">
+                      200点~295点の利用者の回答データ
+                    </button>
+                  </h5>
+                </div>
+                <div id="collapseeight" class="collapse" aria-labelledby="headingeight" data-parent="#accordionExample">
+                  <div class="card-body">
+                    <h2>総合満足度</h2>
+                    <%= bar_chart  [
+                      ["非常に満足",@post200295.where(satisfaction:5).count],
+                      ["満足",@post200295.where(satisfaction:4).count],
+                      ["普通",@post200295.where(satisfaction:3).count],
+                      ["不満",@post200295.where(satisfaction:2).count],
+                      ["非常に不満" ,@post200295.where(satisfaction:1).count]
+                    ] %>
+                    <h2>教材難易度</h2>
+                    <%= bar_chart  [
+                      ["非常にちょうどいい",@post200295.where(difficulty:5).count],
+                      ["ちょうどいい",@post200295.where(difficulty:4).count],
+                      ["普通",@post200295.where(difficulty:3).count],
+                      ["簡単or難しい",@post200295.where(difficulty:2).count],
+                      ["非常に簡単or難しい" ,@post200295.where(difficulty:1).count]
+                    ] %>
+                    <h2>解説の詳しさ</h2>
+                    <%= bar_chart  [
+                      ["非常に詳しい",@post200295.where(detail:5).count],
+                      ["詳しい",@post200295.where(detail:4).count],
+                      ["普通",@post200295.where(detail:3).count],
+                      ["足りない",@post200295.where(detail:2).count],
+                      ["非常に足りない" ,@post200295.where(detail:1).count]
+                    ] %>
+                    <h2>教材のボリューム</h2>
+                    <%= bar_chart  [
+                      ["非常にちょうどいい",@post200295.where(volume:5).count],
+                      ["ちょうどいい",@post200295.where(volume:4).count],
+                      ["普通",@post200295.where(volume:3).count],
+                      ["簡単or難しい",@post200295.where(volume:2).count],
+                      ["非常に簡単or難しい" ,@post200295.where(volume:1).count]
+                    ] %>
+                    <h2>教材の使いやすさ</h2>
+                    <%= bar_chart  [
+                      ["非常に使いやすい",@post200295.where(ease:5).count],
+                      ["使いやすい",@post200295.where(ease:4).count],
+                      ["普通",@post200295.where(ease:3).count],
+                      ["使いにくい",@post200295.where(ease:2).count],
+                      ["非常に使いにくい" ,@post200295.where(ease:1).count]
+                    ] %>
+                    <h2>利用した期間</h2>
+                    <%= bar_chart  [
+                      ["３か月～",@post200295.where(period:5).count],
+                      ["２か月～３か月",@post200295.where(period:4).count],
+                      ["１ヵ月～２か月",@post200295.where(period:3).count],
+                      ["２週間～１ヵ月",@post200295.where(period:2).count],
+                      ["～２週間" ,@post200295.where(period:1).count]
+                    ] %>
+                    <h2>利用した回数(何周したか)</h2>
+                    <%= bar_chart  [
+                      ["５周以上",@post200295.where(counts:5).count],
+                      ["４周",@post200295.where(counts:4).count],
+                      ["３周",@post200295.where(counts:3).count],
+                      ["２周",@post200295.where(counts:2).count],
+                      ["１周" ,@post200295.where(counts:1).count]
+                    ] %>
+
+                  </div>
+                </div>
+              </div>
+              <% end %>
+              <% if @satisfaction195 %>
+              <!--100点台以下-->
+              <div class="card">
+                <div class="card-header" id="headingnine">
+                  <h5 class="mb-0">
+                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapsenine" aria-expanded="false" aria-controls="collapsenine">
+                      ~195点の利用者の回答データ
+                    </button>
+                  </h5>
+                </div>
+                <div id="collapsenine" class="collapse" aria-labelledby="headingnine" data-parent="#accordionExample">
+                  <div class="card-body">
+                    <h2>総合満足度</h2>
+                    <%= bar_chart  [
+                      ["非常に満足",@post195.where(satisfaction:5).count],
+                      ["満足",@post195.where(satisfaction:4).count],
+                      ["普通",@post195.where(satisfaction:3).count],
+                      ["不満",@post195.where(satisfaction:2).count],
+                      ["非常に不満" ,@post195.where(satisfaction:1).count]
+                    ] %>
+                    <h2>教材難易度</h2>
+                    <%= bar_chart  [
+                      ["非常にちょうどいい",@post195.where(difficulty:5).count],
+                      ["ちょうどいい",@post195.where(difficulty:4).count],
+                      ["普通",@post195.where(difficulty:3).count],
+                      ["簡単or難しい",@post195.where(difficulty:2).count],
+                      ["非常に簡単or難しい" ,@post195.where(difficulty:1).count]
+                    ] %>
+                    <h2>解説の詳しさ</h2>
+                    <%= bar_chart  [
+                      ["非常に詳しい",@post195.where(detail:5).count],
+                      ["詳しい",@post195.where(detail:4).count],
+                      ["普通",@post195.where(detail:3).count],
+                      ["足りない",@post195.where(detail:2).count],
+                      ["非常に足りない" ,@post195.where(detail:1).count]
+                    ] %>
+                    <h2>教材のボリューム</h2>
+                    <%= bar_chart  [
+                      ["非常にちょうどいい",@post195.where(volume:5).count],
+                      ["ちょうどいい",@post195.where(volume:4).count],
+                      ["普通",@post195.where(volume:3).count],
+                      ["簡単or難しい",@post195.where(volume:2).count],
+                      ["非常に簡単or難しい" ,@post195.where(volume:1).count]
+                    ] %>
+                    <h2>教材の使いやすさ</h2>
+                    <%= bar_chart  [
+                      ["非常に使いやすい",@post195.where(ease:5).count],
+                      ["使いやすい",@post195.where(ease:4).count],
+                      ["普通",@post195.where(ease:3).count],
+                      ["使いにくい",@post195.where(ease:2).count],
+                      ["非常に使いにくい" ,@post195.where(ease:1).count]
+                    ] %>
+                    <h2>利用した期間</h2>
+                    <%= bar_chart  [
+                      ["３か月～",@post195.where(period:5).count],
+                      ["２か月～３か月",@post195.where(period:4).count],
+                      ["１ヵ月～２か月",@post195.where(period:3).count],
+                      ["２週間～１ヵ月",@post195.where(period:2).count],
+                      ["～２週間" ,@post195.where(period:1).count]
+                    ] %>
+                    <h2>利用した回数(何周したか)</h2>
+                    <%= bar_chart  [
+                      ["５周以上",@post195.where(counts:5).count],
+                      ["４周",@post195.where(counts:4).count],
+                      ["３周",@post195.where(counts:3).count],
+                      ["２周",@post195.where(counts:2).count],
+                      ["１周" ,@post195.where(counts:1).count]
+                    ] %>
+
+                  </div>
+                </div>
+              </div>
+              <% end %>
+            </div>
+        </div>
+        <!--アコーディオンクラスの終わり-->
+      </div>
+    </div>
+
+
+
+
+
+    </div>
+
+
+
+
+  </div>
+</div>

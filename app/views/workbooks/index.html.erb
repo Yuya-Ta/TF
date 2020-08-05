@@ -1,0 +1,40 @@
+<div class="container">
+  <div class="row">
+  <% @products.each do |product| %>
+    <div class="card mb-3 mx-2" style="max-width: 540px;">
+      <div class="row">
+        <div class="col-4">
+          <img width="100%" height="250" class="img-thumbnail rounded"src="<%= product.image %>" preserveAspectRatio="xMidYMid slice" >
+        </div>
+        <div class="col-8">
+          <div class="card-body">
+            <h5 class="card-title"><%= product.product %></h5>
+            <p class="card-text"><%= product.author %></p>
+            <p class="card-text">
+              <% if product.all==1 %>
+              <%= "全パート対応型" %>
+              <% end %>
+              <% if product.listening==1 %>
+              <%= "リスニング型" %>
+              <% end %>
+              <% if product.reading==1 %>
+              <%= "リーディング型" %>
+              <% end %>
+              <% if product.word==1 %>
+              <%= "単語帳" %>
+              <% end %>
+              <% if product.grammer==1 %>
+              <%= "文法型" %>
+              <% end %>
+            </p>
+          </div>
+        </div>
+        <div class="col-12 mb-2 mt-2">
+              <a href=<%= "/workbooks/#{product.id}"%> role="button" class="btn btn-block btn-outline-info">商品詳細ページに進む</a>
+              <a href=<%= "/workbooks/#{product.id}/post"%> role="button" class="btn btn-block btn-outline-primary">口コミ投稿ページに進む</a>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>
+</div>

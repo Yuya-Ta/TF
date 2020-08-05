@@ -1,0 +1,175 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-4 col-sm-12">
+      <div class="card">
+        <div class="card-header text-canter">プロフィール</div>
+        <div class="row">
+          <% if @user == @current_user %>
+            <div class="col-12 mb-2 mt-2 px-5">
+              <%= link_to("プロフィールを編集する", "/users/#{@user.id}/edit" , {class: "btn btn-outline-indigo btn-block" , role:"button"} ) %>
+            </div>
+            <div class="col-12 mb-2 mt-2 px-5">
+              <%= link_to("過去スコアを追加する", "/users/scoreedit" , {class: "btn btn-outline-indigo btn-block" , role:"button"} ) %>
+            </div>
+          <% end %>
+          <div class="text-center col-12 mt-2">
+            <p class="font-weight-bold text-dark text-center"><%= @user.name %></p>
+            <img src="<%= "/user_images/#{@user.image_name}" %>" class="rounded-circle mx-auto d-block user-img">
+              <div class="px-5 mt-3">
+                <% if @current_user  && Like.find_by(user_id: @current_user.id, to_id:@user.id)  %>
+                <button type="button" class="btn btn-block btn-indigo">役に立った済み</button>
+                <% elsif @current_user  %>
+                <%= link_to("/likes/#{@user.id}/creates", {method: "post",role: "button",class: "btn btn-block btn-outline-indigo"}) do %>
+                役に立った
+                <% end %>
+                <% else %>
+                <% end %>
+              </div>
+          </div>
+          <div class="col-12 mt-2 text-center">
+            <a href="#" class="btn-social-circle btn-social-circle--twitter">
+              <i class="fa fa-twitter"></i>
+            </a>
+            <a href="#" class="btn-social-circle btn-social-circle--facebook">
+              <i class="fa fa-facebook"></i>
+            </a>
+            <a href="#" class="btn-social-circle btn-social-circle--pocket">
+              <i class="fa fa-instagram"></i>
+            </a>
+          </div>
+          <div class="col-12 mt-2 mb-2 text-center">
+            <table class="table table-sm">
+              <tr><td>BEST SCORE</td><td>990点</td></tr>
+              <tr><td>勉強開始日</td><td><%= @user.start_date %></td></tr>
+              <tr><td>利用した教材の数</td><td>〇個</td></tr>
+              <tr><td>性別</td><td><%= @user.gender %></td></tr>
+              <tr><td>年齢</td><td><%= @user.age %>歳</td></tr>
+              <tr><td>職業</td><td><%= @user.profession %></td></tr>
+              <tr><td colspan="2">
+                <p>[自己紹介]</P>
+                  <div class="grad-wrap">
+                    <input id="trigger1" class="grad-trigger" type="checkbox">
+                    <label class="grad-btn" for="trigger1"><span class="fa fa-chevron-down"></span>続きを読む</label>
+                    <div class="grad-item"><%= @user.profile %></div>
+                  </div>
+              </td></tr>
+          　</table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--TOEICの折れ線グラフを書きます。Chartkickです。-->
+    <div class="col-md-8 col-sm-12">
+      <div class="card mb-4">
+      <ul class="nav nav-tabs nav-justified md-tabs card-header text-center dropdown" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link active" id="item1-tab" data-toggle="tab" href="#item1" role="tab" aria-controls="item1" aria-selected="true">総合点数</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="item2-tab" data-toggle="tab" href="#item2" role="tab" aria-controls="item2" aria-selected="false">リスニング</a>
+          </li>
+          <li class="nav-item">
+              <a class="nav-link" id="item3-tab" data-toggle="tab" href="#item3" role="tab" aria-controls="item3" aria-selected="false">リーディング</a>
+          </li>
+        </ul>
+        <div class="tab-content card-body">
+          <div class="tab-pane fade show active mt-5" id="item1" role="tabpanel" aria-labelledby="item1-tab">
+            <%= line_chart @score_sum ,curve: false ,messages: {empty: "スコア未登録"} , xtitle: "受験日", ytitle: "点数" %>
+          </div>
+          <div class="tab-pane fade mt-5" id="item2" role="tabpanel" aria-labelledby="item2-tab">
+            <%= line_chart @score_l ,curve: false, messages: {empty: "スコア未登録"} , xtitle: "受験日", ytitle: "点数" %>
+          </div>
+          <div class="tab-pane fade mt-5" id="item3" role="tabpanel" aria-labelledby="item3-tab">
+            <%= line_chart @score_r ,curve: false ,messages: {empty: "スコア未登録"} , xtitle: "受験日", ytitle: "点数" %>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">利用した教材(通し番号の詳細はさらに下です)</div>
+        <div class="card-body">
+      <%= javascript_include_tag "https://www.gstatic.com/charts/loader.js" %>
+      <%= timeline @user_posts_2 %>
+        </div>
+      </div>
+      <!--教材名と期間を表示して、クリックするとさらに詳細が開く仕組み-->
+      <div class="accordion" id="accordionExample">
+              <% @user_posts.each do |post| %>
+              <% @accordionid += 1 %>
+              <div class="card">
+                <div class="card-header" id="heading<%= @accordionid %>">
+                  <h5 class="mb-0">
+                    <button class="btn btn-link b-break text-left" type="button" data-toggle="collapse" data-target="#collapse<%= @accordionid %>" aria-expanded="true" aria-controls="collapse<%= @accordionid %>">
+                      <%= @accordionid %>.<%=  post.workbook.product %>
+                    </button>
+                  </h5>
+                </div>
+                <div id="collapse<%= @accordionid %>" class="collapse" aria-labelledby="heading<%= @accordionid %>" data-parent="#accordionExample">
+                  <div class="card-body">
+                  <div class="col-4">
+                  <% if @current_user  && Like.find_by(user_id: @current_user.id, post_id: post.id)  %>
+                  <button type="button" class="btn btn-block btn-info">役に立った済み</button>
+                  <% elsif @current_user  %>
+                  <%= link_to("/likes/#{post.id}/create", {method: "post",role: "button",class: "btn btn-block btn-outline-info"}) do %>
+                  役に立った
+                  <% end %>
+                  <% else %>
+                  <% end %>
+                  </div>
+                  <div class="col-8">
+                    <table class="table table-sm">
+                      <tr><td>教材名</td><td>
+                        <p class="font-weight-bold text-dark"><%=  post.workbook.product %></p>
+                      </td></tr>
+                      <tr><td>総合満足度</td><td><span class="star5_rating" data-rate="<%= post.satisfaction %>"></span></td></tr>
+                      <tr><td>教材利用開始時の点数</td><td><%= post.points %>点</td></tr>
+                      <tr><td>教材の難易度</td><td>
+                        <% if post.difficulty==1 %>
+                          非常に難しいor簡単
+                        <% elsif post.difficulty==2 %>
+                          難しいor簡単
+                        <% elsif post.difficulty==3 %>
+                          普通
+                        <% elsif post.difficulty==4 %>
+                        　ちょうどいい
+                        <% else %>
+                        　非常にちょうどいい
+                        <% end %>
+                      </td></tr>
+                  　</table>
+                  </div>
+                    <% if post.good_content && post.bad_content %>
+                    <div class="col-12">
+                    【いい評価】
+                          <%= post.good_content%>
+                        </div>
+                        <div class="col-12">
+                          【悪い評価】
+                          <%= post.bad_content %>
+                        </div>
+
+
+                      <% elsif post.good_content %>
+                      <div class="col-12">
+                      【いい評価】
+                            <%= post.good_content%>
+                          </div>
+                      <% elsif  post.bad_content %>
+                      <div class="col-12">
+                      【悪い評価】
+                            <%= post.bad_content %>
+                          </div>
+
+                      <% else %>
+                      <% end  %>
+                  <hr>
+                </div>
+              </div>
+            </div>
+              <% end %>
+
+      </div>
+    </div>
+<!--教材アコーディオンはここで終わり-->
+  </div>
+</div>

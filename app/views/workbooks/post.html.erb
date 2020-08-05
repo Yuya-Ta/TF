@@ -1,0 +1,234 @@
+<aside class="col-sm-12 col-md-6 col-lg-6 m-auto">
+<div class="card">
+<article class="card-body">
+  <h2 class="card-title text-center">口コミ投稿画面</h2>
+  <img class="img-thumbnail rounded img-responsive d-block mx-auto mt-2" src="<%= @workbook.image %>">
+  <div class="text-center">
+  <%= "教材名:#{@workbook.product}"%>
+   </div>
+   <p class="lead text-center mt-2">質問は全部で８つで、最短３０秒ほどで終わります。</p>
+  <%= form_tag("/workbooks/#{@workbook.id}/post_create") do %>
+
+  <form>
+    <% @workbook.errors.full_messages.each do |message| %>
+      <div class="text-danger font-weight-bold">
+        <%= message %>
+      </div>
+    <% end %>
+  <div class="form-group mt-2">
+    <label for="satisfactions lead">Q1.総合的な満足度</label>
+    <div class="fiveStar" id="satisfactions">
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="satisfaction" id="radio1a" value="5" required>
+        <label class="form-check-label" for="radio1a"><span class="star5_rating" data-rate="5"></span>非常に満足</label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="satisfaction" value="4" id="radio1b">
+        <label class="form-check-label" for="radio1b"><span class="star5_rating" data-rate="4"></span>満足</label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="satisfaction" value="3" id="radio1c">
+        <label class="form-check-label" for="radio1c"><span class="star5_rating" data-rate="3"></span>普通</label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="satisfaction" value="2" id="radio1d">
+        <label class="form-check-label" for="radio1d"><span class="star5_rating" data-rate="2"></span>不満</label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="satisfaction" value="1" id="radio1e">
+        <label class="form-check-label" for="radio1e"><span class="star5_rating" data-rate="1"></span>非常に不満</label>
+      </div>
+  </div>
+</div>
+<hr>
+<div class="form-group mt-2">
+  <label for="difficulties lead">Q2.問題の難易度</label>
+  <div class="fiveStar" id="difficulties">
+    <div class="form-check">
+      <input class="form-check-input" type="radio" name="difficulty"id="radio2a" value="5" required>
+      <label class="form-check-label" for="radio2a"><span class="star5_rating" data-rate="5"></span>非常にちょうどいい</label>
+    </div>
+    <div class="form-check">
+      <input class="form-check-input" type="radio" name="difficulty" value="4" id="radio2b">
+      <label class="form-check-label" for="radio2b"><span class="star5_rating" data-rate="4"></span>ちょうどいい</label>
+    </div>
+    <div class="form-check">
+      <input class="form-check-input" type="radio" name="difficulty" value="3" id="radio2c">
+      <label class="form-check-label" for="radio2c"><span class="star5_rating" data-rate="3"></span>普通</label>
+    </div>
+    <div class="form-check">
+      <input class="form-check-input" type="radio" name="difficulty" value="2" id="radio2d">
+      <label class="form-check-label" for="radio2d"><span class="star5_rating" data-rate="2"></span>簡単or難しい</label>
+    </div>
+    <div class="form-check">
+      <input class="form-check-input" type="radio" name="difficulty" value="1" id="radio2e">
+      <label class="form-check-label" for="radio2e"><span class="star5_rating" data-rate="1"></span>非常に簡単or難しい</label>
+    </div>
+</div>
+</div>
+<hr>
+<div class="form-group mt-2">
+  <label for="volumes lead">Q3.教材のコストパーフォーマンス</label>
+  <div class="fiveStar" id="volumes">
+    <div class="form-check">
+      <input class="form-check-input" type="radio" name="volume" id="radio3a" value="5" required>
+      <label class="form-check-label" for="radio3a"><span class="star5_rating" data-rate="5"></span>非常に良い</label>
+    </div>
+    <div class="form-check">
+      <input class="form-check-input" type="radio" name="volume" value="4" id="radio3b">
+      <label class="form-check-label" for="radio3b"><span class="star5_rating" data-rate="4"></span>良い</label>
+    </div>
+    <div class="form-check">
+      <input class="form-check-input" type="radio" name="volume" value="3" id="radio3c">
+      <label class="form-check-label" for="radio3c"><span class="star5_rating" data-rate="3"></span>普通</label>
+    </div>
+    <div class="form-check">
+      <input class="form-check-input" type="radio" name="volume" value="2" id="radio3d">
+      <label class="form-check-label" for="radio3d"><span class="star5_rating" data-rate="2"></span>悪い</label>
+    </div>
+    <div class="form-check">
+      <input class="form-check-input" type="radio" name="volume" value="1" id="radio3e">
+      <label class="form-check-label" for="radio3e"><span class="star5_rating" data-rate="1"></span>非常に悪い</label>
+    </div>
+</div>
+</div>
+<hr>
+<div class="form-group mt-2">
+  <label for="details lead">Q4.解説の詳しさ</label>
+  <div class="fiveStar" id="details">
+    <div class="form-check">
+      <input class="form-check-input" type="radio" name="detail" id="radio4a" value="5" required>
+      <label class="form-check-label" for="radio4a"><span class="star5_rating" data-rate="5"></span>非常に詳しい</label>
+    </div>
+    <div class="form-check">
+      <input class="form-check-input" type="radio" name="detail" value="4" id="radio4b">
+      <label class="form-check-label" for="radio4b"><span class="star5_rating" data-rate="4"></span>詳しい</label>
+    </div>
+    <div class="form-check">
+      <input class="form-check-input" type="radio" name="detail" value="3" id="radio4c">
+      <label class="form-check-label" for="radio4c"><span class="star5_rating" data-rate="3"></span>普通</label>
+    </div>
+    <div class="form-check">
+      <input class="form-check-input" type="radio" name="detail" value="2" id="radio4d">
+      <label class="form-check-label" for="radio4d"><span class="star5_rating" data-rate="2"></span>足りない</label>
+    </div>
+    <div class="form-check">
+      <input class="form-check-input" type="radio" name="detail" value="1" id="radio4e">
+      <label class="form-check-label" for="radio4e"><span class="star5_rating" data-rate="1"></span>非常に足りない</label>
+    </div>
+</div>
+</div>
+<hr>
+<div class="form-group mt-2">
+  <label for="eases lead">Q5.教材の使いやすさ</label>
+  <div class="fiveStar" id="eases">
+    <div class="form-check">
+      <input class="form-check-input" type="radio" name="ease" id="radio5a" value="5" required>
+      <label class="form-check-label" for="radio5a"><span class="star5_rating" data-rate="5"></span>非常に使いやすい</label>
+    </div>
+    <div class="form-check">
+      <input class="form-check-input" type="radio" name="ease" value="4" id="radio5b">
+      <label class="form-check-label" for="radio5b"><span class="star5_rating" data-rate="4"></span>使いやすい</label>
+    </div>
+    <div class="form-check">
+      <input class="form-check-input" type="radio" name="ease" value="3" id="radio5c">
+      <label class="form-check-label" for="radio5c"><span class="star5_rating" data-rate="3"></span>普通</label>
+    </div>
+    <div class="form-check">
+      <input class="form-check-input" type="radio" name="ease" value="2" id="radio5d">
+      <label class="form-check-label" for="radio5d"><span class="star5_rating" data-rate="2"></span>使いにくい</label>
+    </div>
+    <div class="form-check">
+      <input class="form-check-input" type="radio" name="ease" value="1" id="radio5e">
+      <label class="form-check-label" for="radio5e"><span class="star5_rating" data-rate="1"></span>非常に使いにくい</label>
+    </div>
+</div>
+</div>
+<hr>
+<div class="form-group mt-2">
+  <label for="periods lead">Q6.利用した期間</label>
+  <div class="fiveStar" id="periods">
+    <div class="form-check">
+      <input class="form-check-input" type="radio" name="period" id="radio6a" value="5" required>
+      <label class="form-check-label" for="radio6a">３か月～</label>
+    </div>
+    <div class="form-check">
+      <input class="form-check-input" type="radio" name="period" value="4" id="radio6b">
+      <label class="form-check-label" for="radio6b">２か月～３か月</label>
+    </div>
+    <div class="form-check">
+      <input class="form-check-input" type="radio" name="period" value="3" id="radio6c">
+      <label class="form-check-label" for="radio6c">１ヵ月～２か月</label>
+    </div>
+    <div class="form-check">
+      <input class="form-check-input" type="radio" name="period" value="2" id="radio6d">
+      <label class="form-check-label" for="radio6d">２週間～１ヵ月</label>
+    </div>
+    <div class="form-check">
+      <input class="form-check-input" type="radio" name="period" value="1" id="radio6e">
+      <label class="form-check-label" for="radio6e">～２週間</label>
+    </div>
+</div>
+</div>
+<hr>
+<div class="form-group mt-2">
+  <label for="countss lead">Q7.教材を何周しましたか？</label>
+  <div class="fiveStar" id="countss">
+    <div class="form-check">
+      <input class="form-check-input" type="radio" name="counts" id="radio7a" value="5" required>
+      <label class="form-check-label" for="radio7a">５周以上</label>
+    </div>
+    <div class="form-check">
+      <input class="form-check-input" type="radio" name="counts" value="4" id="radio7b">
+      <label class="form-check-label" for="radio7b">４周</label>
+    </div>
+    <div class="form-check">
+      <input class="form-check-input" type="radio" name="counts" value="3" id="radio7c">
+      <label class="form-check-label" for="radio7c">３周</label>
+    </div>
+    <div class="form-check">
+      <input class="form-check-input" type="radio" name="counts" value="2" id="radio7d">
+      <label class="form-check-label" for="radio7d">２周</label>
+    </div>
+    <div class="form-check">
+      <input class="form-check-input" type="radio" name="counts" value="1" id="radio7e">
+      <label class="form-check-label" for="radio7e">１周</label>
+    </div>
+</div>
+</div>
+<hr>
+<div class="form-group">
+  <label for="userpoints">Q8.利用開始時のTOEIC点数</label>
+  <input type="number" name="points" class="form-control" id="userpoints" step="5" min="10" max="990" required>
+  <div class="invalid-feedback">数字を入力してください(未受験の場合はスコア予想をお願いします。)</div>
+</div>
+<hr>
+  <div class="form-group">
+    <label for="userStart">【任意】教材の学習<span class="text-danger font-weight-bold">開始月</span>(マイページに利用教材として追加されます)</label>
+    <input type="month" name="start_date" class="form-control" id="userStart" >
+  </div>
+  <hr>
+  <div class="form-group">
+    <label for="userfinish">【任意】教材の学習<span class="text-danger font-weight-bold">終了月</span>(マイページに利用教材として追加されます)</label>
+    <input type="month" name="finish_date" class="form-control" id="userfinish" >
+  </div>
+  <hr>
+  <div class="form-group">
+    <label for="usergood_content">【任意】教材の<span class="text-danger font-weight-bold">良かった点</span></label>
+      <textarea name="good_content" id="usergood_content" class="form-control" placeholder = "・教材の良い点があればご記入ください"></textarea>
+  </div>
+  <hr>
+  <div class="form-group">
+    <label for="userbad_content">【任意】教材の<span class="text-danger font-weight-bold">悪かった点</span></label>
+      <textarea name="bad_content" id="userbad_content" class="form-control" placeholder = "・教材の悪い点があればご記入ください"></textarea>
+  </div>
+  <hr>
+  <p class="lead text-center mt-2">ご協力ありがとうございました</p>
+  <div class="form-group">
+      <button type="submit" class="btn btn-primary btn-block"> 登録ボタン</button>
+  </div>
+</form>
+<% end %>
+</article>
+</div>
+</aside>

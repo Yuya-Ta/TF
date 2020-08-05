@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>TOEICの森</title>
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+  </head>
+
+  <body>
+<!--共通のヘッダーがここから始まります。-->
+<nav class="navbar navbar-expand-lg navbar-dark indigo">
+  <a class="navbar-brand" href="#">TOEICの森(β)</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+<!--あとで条件分岐でactiveの位置を変えなければいけないかもしれない。めんどくさいから全部activeでもいいかもしれない。-->
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="/"><i class="fa fa-home" aria-hidden="true"></i> ホーム</a>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <i class="fa fa-search" aria-hidden="true"></i> 参考書・問題集を探す
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="#">人気別で探す</a>
+          <a class="dropdown-item" href="#">レベル別で探す</a>
+          <a class="dropdown-item" href="#">学習パート別に探す</a>
+        </div>
+      </li>
+      <% if @current_user %>
+      <li class="nav-item">
+        <%= link_to( "/users/#{@current_user.id}",class: "nav-link") do %>
+        <i class="fa fa-user" aria-hidden="true"></i> マイページ
+        <% end %>
+      </li>
+      <li class="nav-item">
+        <%= link_to("/logout",{class: "nav-link",method: :post}) do %>
+        <i class="fa fa-sign-out" aria-hidden="true"></i> ログアウト
+        <% end %>
+      </li>
+      <% else %>
+      <li class="nav-item">
+        <a class="nav-link" href="#" role="button" data-toggle="modal" data-target="#exampleModalCenter2"><i class="fa fa-sign-in" aria-hidden="true"></i> ログイン</a>
+      </li>
+      <!--会員登録はモーダルウィンドウ開くようにしようと思います。-->
+      <li class="nav-item">
+        <a class="nav-link" href="#" role="button" data-toggle="modal" data-target="#exampleModalCenter">会員登録</a>
+      </li>
+      <% end %>
+    </ul>
+    <%= search_form_for @search_header,url: workbooks_index_path, class: 'form-inline my-2 my-lg-0 ml-auto' do |f| %>
+      <%= f.search_field :author_or_product_cont,placeholder: '著者名・タイトルを入力してください',class: 'form-control' %>
+      <%= f.submit "検索" ,class: 'btn btn-outline-white btn-md my-2 my-sm-0 ml-3' %>
+    <% end %>
+  </div>
+</nav>
+<!--ヘッダーが終わりました。-->
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item active">Home</li>
+  </ol>
+</nav>
+
+<!--<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="#">Home</a></li>
+    <li class="breadcrumb-item active">Library</li>
+  </ol>
+</nav>
+
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="#">Home</a></li>
+    <li class="breadcrumb-item"><a href="#">Library</a></li>
+    <li class="breadcrumb-item active">Data</li>
+  </ol>
+</nav>-->
+<% if flash[:notice] %>
+  <div class="flash">
+    <%= flash[:notice] %>
+  </div>
+<% end %>
+
+      <%= yield %>
+    <div class="modal fade" id="exampleModalCenter2" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalCenterTitle">ログイン</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+            <div class="modal-body">
+<!--こっからログインモーダルウィンドウの中身を書きます-->
+              <aside class="col-sm-12">
+                <div class="card">
+                  <article class="card-body">
+                    <p>
+                      <a href="" class="btn btn-block btn-outline-info"> <i class="fa fa-twitter"></i>twitterでログイン</a>
+                      <a href="" class="btn btn-block btn-outline-primary"> <i class="fa fa-facebook-f"></i> facebookでログイン</a>
+                    </p>
+                    <hr>
+                    <%= form_tag("/login") do %>
+                    <form>
+                      <div class="form-group">
+                        <input name="email" class="form-control notscss" placeholder="・Emailアドレスを入力" type="email" >
+                      </div>
+                      <hr>
+                      <div class="form-group">
+                        <input name="password" class="form-control notscss" placeholder="・パスワードを入力" type="password">
+                      </div>
+                      <hr>
+                      <div class="row">
+                        <div class="col-md-6">
+                          <div class="form-group">
+                            <button type="submit" class="btn btn-primary btn-block"> ログインボタン</button>
+                          </div>
+                        </div>
+                      </div>
+                    </form>
+                    <% end %>
+                  </article>
+                </div>
+              </aside>
+            </div>
+<!--ここまででログインモーダルウィンドウの中身が終わりです-->
+          </div>
+        </div>
+      </div>
+
+      <!--ここからは会員登録モーダルウィンドウです。(ふわってなるやつです)-->
+      <!--ここと下の行何で書いたかわからんからコメントアウト（消したらちゃんと動くようになった）<div class="row">-->
+      <!--<div class="col-md-12">-->
+      <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalCenterTitle">会員登録</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+<!--こっから会員登録モーダルウィンドウの中身を書きます-->
+<aside class="col-sm-12">
+<div class="card">
+<article class="card-body">
+<p>
+  <a href="" class="btn btn-block btn-outline-info"> <i class="fa fa-twitter"></i>twitterで登録</a>
+  <a href="" class="btn btn-block btn-outline-primary"> <i class="fa fa-facebook-f"></i> facebookで登録</a>
+</p>
+<hr>
+<%= form_tag("/users/create") do %>
+<form>
+  <div class="form-group">
+      <input name="email" class="form-control" placeholder="・Emailアドレスを入力" type="email" >
+  </div>
+  <hr>
+  <div class="form-group">
+      <input name="password" class="form-control" placeholder="・パスワードを入力" type="password">
+  </div>
+  <hr>
+  <div class="row">
+      <div class="col-md-6">
+          <div class="form-group">
+              <button type="submit" class="btn btn-primary btn-block"> 登録ボタン</button>
+          </div>
+      </div>
+      <!---後でここら辺に利用規約を貼らないといけない-->
+  </div>
+</form>
+<% end %>
+</article>
+</div>
+</aside>
+</div>
+<!--ここまでで中身が終わりです-->
+
+            </div>
+          </div>
+        </div>
+
+    <!--何であるかわからんcontainerの終わりの部分です。</div>-->
+    <!-- Footer -->
+<footer class="page-footer pt-4 mt-4 indigo text-center text-md-left">
+
+    <!-- Footer Links -->
+    <div class="container">
+        <div class="row">
+
+            <!-- First column -->
+            <div class="col-md-3">
+                <h6 class="text-uppercase font-weight-bold">現在の点数で選ぶ</h6>
+                <ul class="list-unstyled">
+                    <li><a href="#!">900点台</a></li>
+                    <li><a href="#!">800点台</a></li>
+                    <li><a href="#!">700点台</a></li>
+                    <li><a href="#!">600点台</a></li>
+                    <li><a href="#!">500点台</a></li>
+                    <li><a href="#!">400点台</a></li>
+                    <li><a href="#!">300点台</a></li>
+                    <li><a href="#!">200点台</a></li>
+                </ul>
+            </div>
+
+            <div class="col-md-3">
+                <h6 class="text-uppercase font-weight-bold">こだわりで選ぶ</h6>
+                <ul class="list-unstyled">
+                    <li><a href="#!">解説の詳しさ</a></li>
+                    <li><a href="#!">使いやすさ</a></li>
+                    <li><a href="#!">コストパフォーマンス</a></li>
+                </ul>
+            </div>
+            <!-- First column -->
+
+            <!-- Second column -->
+            <div class="col-md-3">
+                <h6 class="text-uppercase font-weight-bold">教材のタイプで選ぶ</h6>
+                <ul class="list-unstyled">
+                    <li><a href="#!">紙ベース</a></li>
+                    <li><a href="#!">アプリ</a></li>
+            </div>
+            <!-- Second column -->
+
+            <!-- Third column -->
+            <div class="col-md-3">
+                <h6 class="text-uppercase font-weight-bold">学習パート別で選ぶ</h6>
+                <ul class="list-unstyled">
+                    <li><a href="#!">全パート対応</a></li>
+                    <li><a href="#!">リスニング</a></li>
+                    <li><a href="#!">リーディング</a></li>
+                    <li><a href="#!">単語帳</a></li>
+                    <li><a href="#!">文法</a></li>
+                </ul>
+            </div>
+            <!-- Third column -->
+        </div>
+    </div>
+    <!-- Footer Links -->
+
+    <!-- Copyright -->
+    <div class="footer-copyright py-3 text-center">
+        <div class="container-fluid">
+            &copy; 2020 Copyright: TOEIC_forest.com </a>
+
+        </div>
+    </div>
+    <!-- Copyright -->
+
+</footer>
+  </body>
+</html>

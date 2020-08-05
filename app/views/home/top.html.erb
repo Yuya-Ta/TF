@@ -1,0 +1,295 @@
+<div class="jumbotron jumbotron-image color-grey-light">
+  <div class="mask rgba-blue-strong d-flex align-items-center h-150">
+    <div class="container text-center white-text py-5">
+      <h1 class="mb-3">TOEICの森</h1>
+      <p class="mb-0">あなたに合った教材を。TOEICの教材に特化した口コミサイト</p>
+      <% unless @current_user %>
+      <button type="button" class="btn btn-outline-warning mt-3" data-toggle="modal" data-target="#exampleModalCenter">会員登録はこちら</button>
+      <% end%>
+    </div>
+  </div>
+</div>
+<div class="container">
+  <h2>無料会員限定機能</h2>
+  <p>1分で可能な無料会員登録後に利用できる機能です。</p>
+  <p>あなたの現在の点数からあなたの目標点数を達成したレビュワーが、どんな教材を使っていたのかを検索することが出来ます。</p>
+  <p>教材診断機能は現在準備中です。</p>
+  <div class="row">
+    <div class="col-6 col-lg-4 o-5column">
+        <div class="card mb-4">
+          <div class="row no-gutters mask rgba-black-strong">
+            <div class="col-3">
+              <img width="100%" height="130" class="rounded"src="<%= @workbook.image %>" preserveAspectRatio="xMidYMid slice" >
+            </div>
+            <div class="col-9 my-auto text-center">
+                <h5 class="card-title">レビュワー検索</h5>
+                <!--<button type="button" class="btn btn-light-blue btn-md">もっと見る</button>-->
+            </div>
+          </div>
+        </div>
+      </div>
+  <div class="col-6 col-lg-4 o-5column">
+      <div class="card mb-4">
+        <div class="row no-gutters mask rgba-black-strong">
+          <div class="col-3">
+            <img width="100%" height="130" class="rounded"src="<%= @workbook.image %>" preserveAspectRatio="xMidYMid slice" >
+          </div>
+          <div class="col-9 my-auto text-center">
+              <h5 class="card-title">教材診断</h5>
+              <!--<button type="button" class="btn btn-light-black btn-md">もっと見る</button>-->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <h2>点数別の人気教材から探す</h2>
+  <div class="row">
+    <div class="col-6 col-lg-4 o-5column">
+        <div class="card mb-4">
+          <div class="row no-gutters">
+            <div class="col-3">
+              <img width="100%" height="130" class="rounded"src="<%= @workbook900.image %>" preserveAspectRatio="xMidYMid slice" >
+            </div>
+            <div class="col-9 my-auto text-center">
+                <h5 class="card-title">900点台人気</h5>
+                <a href="rankings/rank900" role="button" class="btn btn-light-blue btn-md">もっと見る</a>
+            </div>
+          </div>
+        </div>
+      </div>
+  <div class="col-6 col-lg-4 o-5column">
+      <div class="card mb-4">
+        <div class="row no-gutters">
+          <div class="col-3">
+            <img width="100%" height="130" class="rounded"src="<%= @workbook800.image %>" preserveAspectRatio="xMidYMid slice" >
+          </div>
+          <div class="col-9 my-auto text-center">
+              <h5 class="card-title">800点台人気</h5>
+              <a href="rankings/rank800" role="button" class="btn btn-light-blue btn-md">もっと見る</a>
+          </div>
+        </div>
+      </div>
+    </div>
+<div class="col-6 col-lg-4 o-5column">
+    <div class="card mb-4">
+      <div class="row no-gutters">
+        <div class="col-3">
+          <img width="100%" height="130" class="rounded"src="<%= @workbook700.image %>" preserveAspectRatio="xMidYMid slice" >
+        </div>
+        <div class="col-9 my-auto text-center">
+            <h5 class="card-title">700点台人気</h5>
+            <a href="rankings/rank700" role="button" class="btn btn-light-blue btn-md">もっと見る</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-4 o-5column">
+      <div class="card mb-4">
+        <div class="row no-gutters">
+          <div class="col-3">
+            <img width="100%" height="130" class="rounded"src="<%= @workbook600.image %>" preserveAspectRatio="xMidYMid slice" >
+          </div>
+          <div class="col-9 my-auto text-center">
+              <h5 class="card-title">600点台人気</h5>
+              <a href="rankings/rank600" role="button" class="btn btn-light-blue btn-md">もっと見る</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 col-lg-4 o-5column">
+        <div class="card mb-4">
+          <div class="row no-gutters">
+            <div class="col-3">
+              <img width="100%" height="130" class="rounded"src="<%= @workbook500.image %>" preserveAspectRatio="xMidYMid slice" >
+            </div>
+            <div class="col-9 my-auto text-center">
+                <h5 class="card-title">500点台人気</h5>
+                <a href="rankings/rank500" role="button" class="btn btn-light-blue btn-md">もっと見る</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-lg-4 o-5column">
+          <div class="card mb-4">
+            <div class="row no-gutters">
+              <div class="col-3">
+                <img width="100%" height="130" class="rounded"src="<%= @workbook400.image %>" preserveAspectRatio="xMidYMid slice" >
+              </div>
+              <div class="col-9 my-auto text-center">
+                  <h5 class="card-title">400点台人気</h5>
+                  <a href="rankings/rank400" role="button" class="btn btn-light-blue btn-md">もっと見る</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-6 col-lg-4 o-5column">
+            <div class="card mb-4">
+              <div class="row no-gutters">
+                <div class="col-3">
+                  <img width="100%" height="130" class="rounded"src="<%= @workbook300.image %>" preserveAspectRatio="xMidYMid slice" >
+                </div>
+                <div class="col-9 my-auto text-center">
+                    <h5 class="card-title">300点台人気</h5>
+                    <a href="rankings/rank300" role="button" class="btn btn-light-blue btn-md">もっと見る</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-6 col-lg-4 o-5column">
+              <div class="card mb-4">
+                <div class="row no-gutters">
+                  <div class="col-3">
+                    <img width="100%" height="130" class="rounded"src="<%= @workbook200.image %>" preserveAspectRatio="xMidYMid slice" >
+                  </div>
+                  <div class="col-9 my-auto text-center">
+                      <h5 class="card-title">200点台人気</h5>
+                      <a href="rankings/rank200" role="button" class="btn btn-light-blue btn-md">もっと見る</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+</div>
+<h2>教材のタイプ別に人気教材を探す</h2>
+<div class="row">
+  <div class="col-6 col-lg-4 o-5column">
+      <div class="card mb-4">
+        <div class="row no-gutters">
+          <div class="col-3">
+            <img width="100%" height="130" class="rounded"src="<%= @workbook_book.image %>" preserveAspectRatio="xMidYMid slice" >
+          </div>
+          <div class="col-9 my-auto text-center">
+              <h5 class="card-title">紙ベース</h5>
+              <a href="rankings/workbook" role="button" class="btn btn-indigo btn-md">もっと見る</a>
+          </div>
+        </div>
+      </div>
+    </div>
+<div class="col-6 col-lg-4 o-5column">
+    <div class="card mb-4">
+      <div class="row no-gutters mask rgba-black-strong">
+        <div class="col-3">
+          <img width="100%" height="130" class="rounded"src="<%= @workbook.image %>" preserveAspectRatio="xMidYMid slice" >
+        </div>
+        <div class="col-9 my-auto text-center">
+            <h5 class="card-title">スマホアプリ</h5>
+            <!--<button type="button" class="btn btn-indigo btn-md">もっと見る</button>-->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<h2>学習パート別に人気教材を探す</h2>
+<div class="row">
+  <div class="col-6 col-lg-4 o-5column">
+      <div class="card mb-4">
+        <div class="row no-gutters">
+          <div class="col-3">
+            <img width="100%" height="130" class="rounded"src="<%= @workbook_all.image %>" preserveAspectRatio="xMidYMid slice" >
+          </div>
+          <div class="col-9 my-auto text-center">
+              <h5 class="card-title">全パート</h5>
+              <a href="rankings/all" role="button" class="btn btn-cyan btn-md">もっと見る</a>
+          </div>
+        </div>
+      </div>
+    </div>
+<div class="col-6 col-lg-4 o-5column">
+    <div class="card mb-4">
+      <div class="row no-gutters">
+        <div class="col-3">
+          <img width="100%" height="130" class="rounded"src="<%= @workbook_listening.image %>" preserveAspectRatio="xMidYMid slice" >
+        </div>
+        <div class="col-9 my-auto text-center">
+            <h5 class="card-title">リスニング</h5>
+            <a href="rankings/listening" role="button" class="btn btn-cyan btn-md">もっと見る</a>
+        </div>
+      </div>
+    </div>
+  </div>
+<div class="col-6 col-lg-4 o-5column">
+  <div class="card mb-4">
+    <div class="row no-gutters">
+      <div class="col-3">
+        <img width="100%" height="130" class="rounded"src="<%= @workbook_reading.image %>" preserveAspectRatio="xMidYMid slice" >
+      </div>
+      <div class="col-9 my-auto text-center">
+          <h5 class="card-title">リーディング</h5>
+          <a href="rankings/reading" role="button" class="btn btn-cyan btn-md">もっと見る</a>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="col-6 col-lg-4 o-5column">
+  <div class="card mb-4">
+    <div class="row no-gutters">
+      <div class="col-3">
+        <img width="100%" height="130" class="rounded"src="<%= @workbook_word.image %>" preserveAspectRatio="xMidYMid slice" >
+      </div>
+      <div class="col-9 my-auto text-center">
+          <h5 class="card-title">単語帳</h5>
+          <a href="rankings/word" role="button" class="btn btn-cyan btn-md">もっと見る</a>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="col-6 col-lg-4 o-5column">
+  <div class="card mb-4">
+    <div class="row no-gutters">
+      <div class="col-3">
+        <img width="100%" height="130" class="rounded"src="<%= @workbook_grammer.image %>" preserveAspectRatio="xMidYMid slice" >
+      </div>
+      <div class="col-9 my-auto text-center">
+          <h5 class="card-title">文法</h5>
+          <a href="rankings/grammer" role="button" class="btn btn-cyan btn-md">もっと見る</a>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+<h2>こだわりポイントから探す</h2>
+<div class="row">
+  <div class="col-6 col-lg-4 o-5column">
+      <div class="card mb-4">
+        <div class="row no-gutters">
+          <div class="col-3">
+            <img width="100%" height="130" class="rounded"src="<%= @workbook_detail.image %>" preserveAspectRatio="xMidYMid slice" >
+          </div>
+          <div class="col-9 my-auto text-center">
+              <h5 class="card-title">解説の詳しさ</h5>
+              <a href="rankings/detail" role="button" class="btn btn-indigo btn-md">もっと見る</a>
+          </div>
+        </div>
+      </div>
+    </div>
+<div class="col-6 col-lg-4 o-5column">
+    <div class="card mb-4">
+      <div class="row no-gutters">
+        <div class="col-3">
+          <img width="100%" height="130" class="rounded"src="<%= @workbook_ease.image %>" preserveAspectRatio="xMidYMid slice" >
+        </div>
+        <div class="col-9 my-auto text-center">
+            <h5 class="card-title">使いやすさ</h5>
+          <a href="rankings/ease" role="button" class="btn btn-indigo btn-md">もっと見る</a>
+        </div>
+      </div>
+    </div>
+  </div>
+<div class="col-6 col-lg-4 o-5column">
+  <div class="card mb-4">
+    <div class="row no-gutters">
+      <div class="col-3">
+        <img width="100%" height="130" class="rounded"src="<%= @workbook_cost.image %>" preserveAspectRatio="xMidYMid slice" >
+      </div>
+      <div class="col-9 my-auto text-center">
+          <h5 class="card-title">コストパフォーマンス</h5>
+          <a href="rankings/cost" role="button" class="btn btn-indigo btn-md">もっと見る</a>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+
+
+
+</div>

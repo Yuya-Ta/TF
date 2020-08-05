@@ -1,0 +1,37 @@
+<aside class="col-sm-12 col-md-6 col-lg-6 m-auto">
+<div class="card">
+<article class="card-body">
+  <h2 class="card-title text-center">ログイン</h2>
+<p>
+  <a href="" class="btn btn-block btn-outline-info"> <i class="fa fa-twitter"></i>twitterでログイン</a>
+  <a href="" class="btn btn-block btn-outline-primary"> <i class="fa fa-facebook-f"></i> facebookでログイン</a>
+</p>
+<hr>
+<%= form_tag("/login") do %>
+<form>
+  <% if @error_message %>
+    <div class="form-error">
+      <%= @error_message %>
+    </div>
+  <% end %>
+  <div class="form-group">
+      <input name="email" class="form-control" placeholder="・Emailアドレスを入力" type="email" >
+  </div>
+  <hr>
+  <div class="form-group">
+      <input name="password" class="form-control" placeholder="・パスワードを入力" type="password">
+  </div>
+  <hr>
+  <div class="row">
+      <div class="col-md-6">
+          <div class="form-group">
+              <button type="submit" class="btn btn-primary btn-block"> ログインボタン</button>
+          </div>
+      </div>
+      <!---後でここら辺に利用規約を貼らないといけない-->
+  </div>
+</form>
+<% end %>
+</article>
+</div>
+</aside>
