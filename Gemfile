@@ -30,6 +30,7 @@ gem 'font-awesome-rails'
 gem 'bcrypt', '~> 3.1.7'
 gem 'chart-js-rails', '~> 0.1.4'
 # jquery
+gem 'rails_12factor', group: :production
 gem "jquery-rails"
 gem "jquery-turbolinks"
 gem 'omniauth'
