@@ -45,7 +45,7 @@ end
       @user = User.new(
       password: params[:password],
       email: params[:email],
-      image_name: "default.png"
+      image_name:"default.png"
     )
       if  @user.save
         session[:user_id] = @user.id

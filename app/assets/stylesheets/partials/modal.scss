@@ -2,6 +2,26 @@
 .btn {
 white-space: normal;
 }
+
+/* スマホ横画面用 */
+@media screen and (max-width: 780px) {
+  .container{
+    padding:0;
+    margin:0;
+  }
+  div[class^="col-"] {padding:0;}
+  .row {margin:0;}
+}
+/* スマホ縦画面用 */
+@media screen and (max-width: 780px) {
+  .container{
+    padding:0;
+    margin:0;
+  }
+  div[class^="col-"] {padding:0;}
+  .row {margin:0;}
+}
+
 .jumbotron {
   background-image: image-url("3568744_m-min.jpg");
   background-size: cover;
